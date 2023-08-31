@@ -1,12 +1,9 @@
 "use strict";
-// import { Router } from 'express';
-// import CommonValidator from '../common/validators/commonValidator';
-// import Uploader from '../common/middlewares/uploader/uploader';
-// import FileFolder from '../common/fileFolders/fileFolders';
-// class AbstractRouter {
-//   public router = Router();
-//   public commonValidator = new CommonValidator();
-//   public uploader = new Uploader();
-//   public fileFolders = FileFolder;
-// }
-// export default AbstractRouter;
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+class AbstractRouter {
+    constructor() {
+        this.router = (0, express_1.Router)();
+    }
+}
+exports.default = AbstractRouter;

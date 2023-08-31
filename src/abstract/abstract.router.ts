@@ -1,13 +1,9 @@
-// import { Router } from 'express';
-// import CommonValidator from '../common/validators/commonValidator';
-// import Uploader from '../common/middlewares/uploader/uploader';
-// import FileFolder from '../common/fileFolders/fileFolders';
+import { Router } from "express";
 
-// class AbstractRouter {
-//   public router = Router();
-//   public commonValidator = new CommonValidator();
-//   public uploader = new Uploader();
-//   public fileFolders = FileFolder;
-// }
+class AbstractRouter {
 
-// export default AbstractRouter;
+  public router = Router();
+
+}
+
+export default AbstractRouter;

@@ -7,6 +7,14 @@ class BasicRouter {
   public BasicRouter = Router();
   private CrudBasicRouter = new CrudBasicRouter();
 
+  constructor() {
+    this.callRouter();
+  }
+  private callRouter() {
+
+    this.BasicRouter.use("/", this.CrudBasicRouter.router);
+  }
+
 
 
 

@@ -9,6 +9,10 @@ class BasicRouter {
     constructor() {
         this.BasicRouter = (0, express_1.Router)();
         this.CrudBasicRouter = new crud_basic_router_1.default();
+        this.callRouter();
+    }
+    callRouter() {
+        this.BasicRouter.use("/", this.CrudBasicRouter.router);
     }
 }
 exports.default = BasicRouter;

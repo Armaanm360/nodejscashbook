@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const basic_router_1 = __importDefault(require("../BasicModule/basic.router"));
+const user_router_1 = __importDefault(require("./../BasicUser/user.router"));
+const expense_router_1 = __importDefault(require("./BasicExpense/expense.router"));
 class RootRouter {
     //learn about constructor
     //where we define - we make that from scratch
@@ -12,6 +14,8 @@ class RootRouter {
         //this should be public
         this.v1Router = (0, express_1.Router)();
         this.basicRouter = new basic_router_1.default();
+        this.userRouter = new user_router_1.default();
+        this.createRouter = new expense_router_1.default();
         this.callV1Router();
     }
     //now call callV1Router
@@ -19,6 +23,10 @@ class RootRouter {
     callV1Router() {
         //define the first basic route
         this.v1Router.use("/simple", this.basicRouter.BasicRouter);
+        //Basic User Router
+        this.v1Router.use("/users", this.userRouter.UserRouter);
+        //Basic Expense Router
+        this.v1Router.use("/expense", this.createRouter.ExpenseRouter);
     }
 }
 exports.default = RootRouter;
