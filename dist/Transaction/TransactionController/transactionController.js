@@ -24,28 +24,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_controller_1 = __importDefault(require("../../abstract/abstract.controller"));
-const create_user_service_1 = __importDefault(require("./../UserService/create.user.service"));
-class createUserController extends abstract_controller_1.default {
+const transactionService_1 = __importDefault(require("../TransactionService/transactionService"));
+class TransactionController extends abstract_controller_1.default {
     constructor() {
         super();
-        this.CreateUserService = new create_user_service_1.default();
-        this.createUserMeth = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { username, email, password } = req.body;
-            const _a = yield this.CreateUserService.createService({
-                username,
-                email,
-                password,
-            }), { code } = _a, data = __rest(_a, ["code"]);
+        this.createTransService = new transactionService_1.default();
+        this.createTrans = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const payload = req.body.data;
+            // console.log(req.body,'npasdlihfkljasdh');
+            const _a = yield this.createTransService.createServiceTrans(payload), { code } = _a, data = __rest(_a, ["code"]);
             res.status(code).json(data);
         }));
-        this.userLogin = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { email, password } = req.body;
-            const _b = yield this.CreateUserService.loginService({
-                email,
-                password
-            }), { code } = _b, data = __rest(_b, ["code"]);
+        this.listTrans = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { userid } = req.params;
+            const _b = yield this.createTransService.listServiceTrans(userid), { code } = _b, data = __rest(_b, ["code"]);
             res.status(code).json(data);
         }));
     }
 }
-exports.default = createUserController;
+exports.default = TransactionController;

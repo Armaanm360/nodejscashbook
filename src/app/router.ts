@@ -2,6 +2,8 @@ import { Router } from "express";
 import BasicRouter from "../BasicModule/basic.router";
 import UserRouter from './../BasicUser/user.router';
 import ExpenseRouter from "./BasicExpense/expense.router";
+import TransactionRouter from './../Transaction/TransactionRoutes/transactionRoute';
+import RootTransactionRouter from "../Transaction/rootTransaction.router";
 
 
 class RootRouter {
@@ -9,8 +11,9 @@ class RootRouter {
   //this should be public
   public v1Router = Router();
   private basicRouter = new BasicRouter();
-  private userRouter = new UserRouter();
+  private userRouter =  new UserRouter();
   private createRouter = new ExpenseRouter();
+  private TransactionRouter = new RootTransactionRouter();
 
 
   //learn about constructor
@@ -35,7 +38,10 @@ class RootRouter {
 
 
     //Basic Expense Router
-    this.v1Router.use("/expense", this.createRouter.ExpenseRouter);
+    // this.v1Router.use("/expense", this.TransactionRouter.transacRouter);
+
+    //transaction
+    this.v1Router.use("/transaction", this.TransactionRouter.transacRouter);
 
 
 

@@ -2,7 +2,6 @@ import CommonAbstractServices from '../commonAbstract/common.abstract.service';
 import Lib from '../../utils/lib/lib';
 import config from '../../config/config';
 import { sendEmailOtpTemplate } from '../../templates/sendEmailOtp';
-import { IForgetPassProps } from '../types/commontypes';
 import ResMsg from '../../utils/miscellaneous/responseMessage';
 import AbstractServices from '../../abstract/abstract.service';
 

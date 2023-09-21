@@ -8,36 +8,87 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_service_1 = __importDefault(require("../../abstract/abstract.service"));
+const lib_1 = __importDefault(require("../../utils/lib/lib"));
 class CreateUserService extends abstract_service_1.default {
     constructor() {
         super();
     }
-    createService({ name, email, username, password, }) {
+    createService({ username, email, password, }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield this.db('users').insert({
-                name,
-                email,
-                username,
-                password,
-            });
-            if (res.length) {
-                return {
-                    success: true,
-                    code: 201,
-                    message: 'User added successfully',
-                    data: { name, email, username, password },
-                };
-            }
-            else {
+            const pass = yield lib_1.default.hashPass(password);
+            const checkemail = yield this.db('users').where('email', email);
+            if (checkemail.length) {
                 return {
                     success: false,
                     code: 401,
-                    message: 'data not found',
+                    message: 'User Email Already Used'
+                };
+            }
+            else {
+                const res = yield this.db('users').insert({
+                    username,
+                    email,
+                    password: pass,
+                });
+                if (res.length) {
+                    return {
+                        success: true,
+                        code: 201,
+                        message: 'User added successfully',
+                        data: { username, email },
+                    };
+                }
+                else {
+                    return {
+                        success: false,
+                        code: 401,
+                        message: 'data not found',
+                    };
+                }
+            }
+        });
+    }
+    loginService({ email, password }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const checkuser = yield this.db('users').select('*').where({ email });
+            if (!checkuser.length) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_BAD_REQUEST,
+                    message: this.ResMsg.WRONG_CREDENTIALS,
+                };
+            }
+            else {
+                const _a = checkuser[0], { password: hashPass } = _a, rest = __rest(_a, ["password"]);
+                const checkPass = yield lib_1.default.compare(password, hashPass);
+                if (!checkPass) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_BAD_REQUEST,
+                        message: this.ResMsg.WRONG_CREDENTIALS,
+                    };
+                }
+                return {
+                    success: true,
+                    code: 201,
+                    message: 'Logged In Successfully',
+                    data: { email, password },
                 };
             }
         });
