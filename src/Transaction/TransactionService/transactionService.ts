@@ -10,8 +10,44 @@ class TransService extends AbstractService{
 
         const dbdata = await this.db('transactions').where('user_id',userid)
 
-        //console.log(dbdata);
-        const requestdata = payload;
+        const datacount = dbdata.length;
+
+        const dbuserid = dbdata[0].user_id;
+
+        const dbpackage = await this.db('users').where('id',dbuserid).join('packages','packages.package_id','=','users.package_activated');
+        
+        const activatedpackage = dbpackage[0].package_name;
+        
+
+
+
+       if (datacount === 10 && activatedpackage === 'FREE') {
+        return {
+          success:false,
+          code:401,
+          message:'You Are Running FREE version,For More Entry,please check our packages'
+        }
+        
+       }else if(datacount === 20 && activatedpackage === 'STANDARD'){
+        return {
+          success:false,
+          code:401,
+          message:'You Are Running STANDARD version,For More Entry,please check our packages'
+        }
+       }else if(datacount === 30 && activatedpackage === 'PLUS'){
+        return {
+          success:false,
+          code:401,
+          message:'You Are Running PLUS version,For More Entry,please check our packages'
+        }
+       }else if(datacount === 40 && activatedpackage === 'PREMIUM'){
+        return {
+          success:false,
+          code:401,
+          message:'You Are Running PREMIUM version,For More Entry,please check our packages'
+        }
+      }else{
+         const requestdata = payload;
 
         
     //  return {
@@ -59,90 +95,87 @@ const newinserted = await this.db('transactions').insert(difference);
       success: true,
       code: 201,
       message: 'Data Exported Successfully',
-      data: newinserted,
+      data: difference,
     };
 }
+      }
+       
 
-// console.log(objectC);
-
-
-//console.log(difference);
-
+  }
 
 
+  //create payment 
 
-// await this.db('transactions').insert(difference);
+  public async createPayment(payload:any){
 
-// console.log(objectC);
+    const user_id = payload.user_id;
 
+    const current_package = payload.current_package;
 
+    const requested_package = payload.request_package;
 
-// const objA = {
-//   "data": [
-//     {
-//       "id": 1,
-//       "name": "armaan"
-//     },
-//     {
-//       "id": 2,
-//       "name": "nim"
-//     },
-    
-//   ]
-// };
+    const given_amount = parseFloat(payload.amount);
 
 
-// const objB = {
-//   "data": [
-//     {
-//       "id": 2,
-//       "name": "nim"
-//     },
-//     {
-//       "id": 3,
-//       "name": "Himbar"
-//     },
-//     {
-//       "id": 5,
-//       "name": "dilbar"
-//     }
-//   ]
-// };
-
-// //create a third object to merge 
-
-// const difference = [];
-
-// for(const itemB of objB.data){
-
-//   const itemA = objA.data.find((item)=>item.id === itemB.id);
-//   if (!itemA) {
-
-//     difference.push(itemB);
-    
-//   }
-
-// }
+    const requested_package_price = await this.db('packages').select('package_price').where('package_id',requested_package).first();
 
 
-// const objectC = {
-//   "data":difference
-// }
+    const request_package_name =requested_package_price.package_name;
 
-// console.log(objectC);
+
+    const final_price = parseFloat(requested_package_price.package_price)
 
 
 
 
+    if (current_package > requested_package) {
+    return {
+      success: true,
+      code: 401,
+      message: 'The Package You Are Looking For Is Not Available',
+    };
+      // console.log('The Package You Are Looking For Is Not Available');
+    }else if(given_amount < final_price){
+
+    return {
+      success: true,
+      code: 401,
+      message: 'Invalid Amount',
+    };
+     // console.log('Invalid Amount');
+    }else{
 
 
+      const confirm_payment = await this.db('payments').insert({amount:given_amount,requested_package:requested_package,user_id:user_id})
 
- return {
+      const update_user_package = await this.db('users').where({id:user_id}).update({package_activated:requested_package}); 
+
+      const info = await this.db('users').where({'id':user_id}).join('packages','packages.package_id','=','users.package_activated').first();
+
+      let getUserId = info.username;
+      let email = info.username;
+      let getUserPackage = info.package_name;
+      let getUserPackageId = info.package_id;
+
+
+      console.log('Payment Successful');
+
+     return {
       success: true,
       code: 201,
-      message: 'Data Exported Successfully',
-      // data: requestdata,
+      message: 'Payment Successful',
+      data: {email,getUserPackage,getUserPackageId},
+
+ 
     };
+    }
+
+
+
+   
+
+
+
   }
   
 
@@ -155,6 +188,18 @@ const newinserted = await this.db('transactions').insert(difference);
       code: 201,
       message: 'Data Fetched Successfully',
       // data: {data},
+    };
+  }
+
+  public async listPackages(){
+
+   const data = await this.db('packages');
+
+     return {
+      success: true,
+      code: 201,
+      message: 'Data Fetched Successfully',
+      data: {data},
     };
   }
 

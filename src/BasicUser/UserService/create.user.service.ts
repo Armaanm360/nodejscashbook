@@ -64,15 +64,25 @@ class CreateUserService extends AbstractService {
 
   public async loginService({email,password}:ILogin){
 
-const checkuser = await this.db('users').select('*').where({ email });
 
-    if (!checkuser.length) {
+    const basic = await this.db('users').select('*').where({ email })
+
+    
+
+  if (!basic.length) {
       return {
         success: false,
         code: this.StatusCode.HTTP_BAD_REQUEST,
         message: this.ResMsg.WRONG_CREDENTIALS,
       };
     }else{
+          const checkuser = await this.db('users').select('*').where({ email }).join('packages','packages.package_id','=','users.package_activated');
+
+    console.log(basic);
+    const getUserPackage = checkuser[0].package_name;
+    const getUserPackageId = checkuser[0].package_id;
+    const getUserId = checkuser[0].id;
+    const getUsername = checkuser[0].username;
      const { password: hashPass, ...rest } = checkuser[0];
     const checkPass = await Lib.compare(password, hashPass);
     if (!checkPass) {
@@ -87,7 +97,7 @@ const checkuser = await this.db('users').select('*').where({ email });
       success: true,
       code: 201,
       message: 'Logged In Successfully',
-      data: { email,password },
+      data: { getUserId,getUsername,email,getUserPackage,getUserPackageId}
     };
     }
 

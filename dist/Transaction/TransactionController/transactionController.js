@@ -40,6 +40,16 @@ class TransactionController extends abstract_controller_1.default {
             const _b = yield this.createTransService.listServiceTrans(userid), { code } = _b, data = __rest(_b, ["code"]);
             res.status(code).json(data);
         }));
+        this.getPackages = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { userid } = req.params;
+            const _c = yield this.createTransService.listPackages(), { code } = _c, data = __rest(_c, ["code"]);
+            res.status(code).json(data);
+        }));
+        this.createPayment = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const payload = req.body;
+            const _d = yield this.createTransService.createPayment(payload), { code } = _d, data = __rest(_d, ["code"]);
+            res.status(code).json(data);
+        }));
     }
 }
 exports.default = TransactionController;

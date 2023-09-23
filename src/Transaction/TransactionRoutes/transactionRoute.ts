@@ -21,6 +21,12 @@ class TransactionRouter extends AbstractRouter{
     //   .route('/get/:user')
     //    .get(this.TransController.listTrans);
           this.router.route('/:userid').get(this.TransController.listTrans);
+          this.router.route('/get-packages/all').get(this.TransController.getPackages);
+
+          //creating payment section
+
+           this.router.route('/payment/create').post(this.TransController.createPayment);
+
   }
 
 }

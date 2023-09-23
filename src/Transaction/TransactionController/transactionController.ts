@@ -36,6 +36,23 @@ class TransactionController extends AbstractController{
     }
   );
 
+  public getPackages = this.asyncWrapper.wrap(
+    async (req:Request,res:Response)=>{
+      const {userid} = req.params
+      const {code, ...data} = await this.createTransService.listPackages()
+      res.status(code).json(data);
+    }
+  );
+
+
+  public createPayment = this.asyncWrapper.wrap(
+    async (req:Request,res:Response)=>{
+      const payload = req.body
+      const {code, ...data} = await this.createTransService.createPayment(payload)
+      res.status(code).json(data);
+    }
+  );
+
   
 
 }

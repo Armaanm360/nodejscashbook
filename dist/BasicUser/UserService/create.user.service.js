@@ -66,8 +66,8 @@ class CreateUserService extends abstract_service_1.default {
     }
     loginService({ email, password }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const checkuser = yield this.db('users').select('*').where({ email });
-            if (!checkuser.length) {
+            const basic = yield this.db('users').select('*').where({ email });
+            if (!basic.length) {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_BAD_REQUEST,
@@ -75,6 +75,12 @@ class CreateUserService extends abstract_service_1.default {
                 };
             }
             else {
+                const checkuser = yield this.db('users').select('*').where({ email }).join('packages', 'packages.package_id', '=', 'users.package_activated');
+                console.log(basic);
+                const getUserPackage = checkuser[0].package_name;
+                const getUserPackageId = checkuser[0].package_id;
+                const getUserId = checkuser[0].id;
+                const getUsername = checkuser[0].username;
                 const _a = checkuser[0], { password: hashPass } = _a, rest = __rest(_a, ["password"]);
                 const checkPass = yield lib_1.default.compare(password, hashPass);
                 if (!checkPass) {
@@ -88,7 +94,7 @@ class CreateUserService extends abstract_service_1.default {
                     success: true,
                     code: 201,
                     message: 'Logged In Successfully',
-                    data: { email, password },
+                    data: { getUserId, getUsername, email, getUserPackage, getUserPackageId }
                 };
             }
         });
