@@ -17,7 +17,8 @@ class App {
     }
     // init middlewares
     initMiddlewares() {
-        this.app.use(express_1.default.json());
+        // this.app.use(express.json());
+        this.app.use(express_1.default.json({ strict: false }));
         this.app.use(express_1.default.urlencoded({ extended: true }));
         // this.app.use(morgan('dev'));
         this.app.use((0, cors_1.default)({ origin: ['localhost:3000'], credentials: true }));

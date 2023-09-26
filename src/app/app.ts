@@ -20,7 +20,8 @@ class App {
 
   // init middlewares
   private initMiddlewares() {
-    this.app.use(express.json());
+    // this.app.use(express.json());
+    this.app.use(express.json({ strict: false }))
     this.app.use(express.urlencoded({ extended: true }));
     // this.app.use(morgan('dev'));
     this.app.use(cors({ origin: ['localhost:3000'], credentials: true }));
