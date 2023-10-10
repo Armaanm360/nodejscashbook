@@ -30,6 +30,62 @@ class OtpController extends AbstractController {
       res.status(201).json(check_email_otp);
     }
   );
+
+  public forgetOtp = this.asyncWrapper.wrap(
+    async (req: Request, res: Response) => {
+      const { email } = req.body;
+
+      const { code, ...data } = await this.createOtpService.otpForgetService(
+        email
+      );
+
+      res.status(code).json(data);
+    }
+  );
+
+  public forgetOtpMatch = this.asyncWrapper.wrap(
+    async (req: Request, res: Response) => {
+      const { email, user_otp } = req.body;
+
+      const { code, ...data } =
+        await this.createOtpService.otpForgetServiceCrossCheck(
+          String(email),
+          String(user_otp)
+        );
+
+      res.status(code).json(data);
+    }
+  );
+
+  public forgetchangePassword = this.asyncWrapper.wrap(
+    async (req: Request, res: Response) => {
+      const { email, password } = req.body;
+
+      const { code, ...data } =
+        await this.createOtpService.forgetchangePassword(
+          String(email),
+          String(password)
+        );
+
+      res.status(code).json(data);
+    }
+  );
+
+  //change password
+  public changePasswordInsideCheck = this.asyncWrapper.wrap(
+    async (req: Request, res: Response) => {
+      const { email, password, changed_password } = req.body;
+
+      const { code, ...data } =
+        await this.createOtpService.changePasswordInsideCheck(
+          String(email),
+          String(password),
+          String(changed_password)
+        );
+
+      res.status(code).json(data);
+    }
+  );
 }
 
 export default OtpController;
