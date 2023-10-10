@@ -3,6 +3,8 @@ import BasicRouter from '../BasicModule/basic.router';
 import UserRouter from './../BasicUser/user.router';
 import ExpenseRouter from './BasicExpense/expense.router';
 import AuthChecker from '../common/middlewares/authChecker/authChecker';
+import TransactionRouter from './../Transaction/TransactionRoutes/transactionRoute';
+import RootTransactionRouter from '../Transaction/rootTransaction.router';
 
 class RootRouter {
   //this should be public
@@ -11,6 +13,7 @@ class RootRouter {
   private userRouter = new UserRouter();
   private createRouter = new ExpenseRouter();
   private authChecker = new AuthChecker();
+  private TransactionRouter = new RootTransactionRouter();
 
   //learn about constructor
   //where we define - we make that from scratch
@@ -36,6 +39,10 @@ class RootRouter {
       this.authChecker.userAuthChecker,
       this.createRouter.ExpenseRouter
     );
+    // this.v1Router.use("/expense", this.TransactionRouter.transacRouter);
+
+    //transaction
+    this.v1Router.use('/transaction', this.TransactionRouter.transacRouter);
   }
 }
 

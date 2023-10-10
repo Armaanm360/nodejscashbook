@@ -1,34 +1,30 @@
 import AbstractService from '../../abstract/abstract.service';
-import CommonService from '../../common/commonService/common.service';
+import { ILogin } from '../../common/types/commontypes';
 import Lib from '../../utils/lib/lib';
 import { CreatingUser } from '../utils/user.types';
+import CommonService from './../../common/commonService/common.service';
 
 class CreateUserService extends AbstractService {
   private commonService = new CommonService();
   constructor() {
     super();
   }
-  public async createService({
-    name,
-    email,
-    username,
-    password,
-  }: CreatingUser) {
-    const hashPas = await Lib.hashPass(password);
-    // console.log(password);
-    const dbtab = 'users';
-    const checkforeamil = await this.commonService.checkUserByUniqueKey({
-      table: dbtab,
-      field: 'email',
-      value: email,
-    });
+  public async createService({ username, email, password }: CreatingUser) {
+    const pass = await Lib.hashPass(password);
 
-    if (!checkforeamil) {
+    const checkemail = await this.db('users').where('email', email);
+
+    if (checkemail.length) {
+      return {
+        success: false,
+        code: 401,
+        message: 'User Email Already Used',
+      };
+    } else {
       const res = await this.db('users').insert({
-        name,
-        email,
         username,
-        password: hashPas,
+        email,
+        password: pass,
       });
 
       if (res.length) {
@@ -36,20 +32,64 @@ class CreateUserService extends AbstractService {
           success: true,
           code: 201,
           message: 'User added successfully',
-          data: { name, email, username, password: hashPas },
+          data: { username, email },
         };
       } else {
         return {
-          success: false,
+          success: true,
           code: 401,
-          message: 'data not found',
+          message: 'Email Already Exsists',
         };
       }
+    }
+  }
+
+  public async loginService({ email, password }: ILogin) {
+    const basic = await this.db('users').select('*').where({ email });
+
+    if (!basic.length) {
+      return {
+        success: false,
+        code: this.StatusCode.HTTP_BAD_REQUEST,
+        message: this.ResMsg.WRONG_CREDENTIALS,
+      };
     } else {
+      const checkuser = await this.db('users')
+        .select('*')
+        .where({ email })
+        .join(
+          'packages',
+          'packages.package_id',
+          '=',
+          'users.package_activated'
+        );
+
+      console.log(basic);
+      const getUserPackage = checkuser[0].package_name;
+      const getUserPackageId = checkuser[0].package_id;
+      const getUserId = checkuser[0].id;
+      const getUsername = checkuser[0].username;
+      const { password: hashPass, ...rest } = checkuser[0];
+      const checkPass = await Lib.compare(password, hashPass);
+      if (!checkPass) {
+        return {
+          success: false,
+          code: this.StatusCode.HTTP_BAD_REQUEST,
+          message: this.ResMsg.WRONG_CREDENTIALS,
+        };
+      }
+
       return {
         success: true,
-        code: 401,
-        message: 'Email Already Exsists',
+        code: 201,
+        message: 'Logged In Successfully',
+        data: {
+          getUserId,
+          getUsername,
+          email,
+          getUserPackage,
+          getUserPackageId,
+        },
       };
     }
   }

@@ -30,13 +30,20 @@ class createUserController extends abstract_controller_1.default {
         super();
         this.CreateUserService = new create_user_service_1.default();
         this.createUserMeth = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { name, email, username, password } = req.body;
+            const { username, email, password } = req.body;
             const _a = yield this.CreateUserService.createService({
-                name,
-                email,
                 username,
+                email,
                 password,
             }), { code } = _a, data = __rest(_a, ["code"]);
+            res.status(code).json(data);
+        }));
+        this.userLogin = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { email, password } = req.body;
+            const _b = yield this.CreateUserService.loginService({
+                email,
+                password
+            }), { code } = _b, data = __rest(_b, ["code"]);
             res.status(code).json(data);
         }));
     }
