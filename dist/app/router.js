@@ -7,6 +7,7 @@ const express_1 = require("express");
 const basic_router_1 = __importDefault(require("../BasicModule/basic.router"));
 const user_router_1 = __importDefault(require("./../BasicUser/user.router"));
 const expense_router_1 = __importDefault(require("./BasicExpense/expense.router"));
+const authChecker_1 = __importDefault(require("../common/middlewares/authChecker/authChecker"));
 class RootRouter {
     //learn about constructor
     //where we define - we make that from scratch
@@ -16,17 +17,18 @@ class RootRouter {
         this.basicRouter = new basic_router_1.default();
         this.userRouter = new user_router_1.default();
         this.createRouter = new expense_router_1.default();
+        this.authChecker = new authChecker_1.default();
         this.callV1Router();
     }
     //now call callV1Router
     //which has to be private
     callV1Router() {
         //define the first basic route
-        this.v1Router.use("/simple", this.basicRouter.BasicRouter);
+        this.v1Router.use('/simple', this.basicRouter.BasicRouter);
         //Basic User Router
-        this.v1Router.use("/users", this.userRouter.UserRouter);
+        this.v1Router.use('/users', this.userRouter.UserRouter);
         //Basic Expense Router
-        this.v1Router.use("/expense", this.createRouter.ExpenseRouter);
+        this.v1Router.use('/expense', this.authChecker.userAuthChecker, this.createRouter.ExpenseRouter);
     }
 }
 exports.default = RootRouter;

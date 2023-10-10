@@ -39,7 +39,7 @@ class Otpservice extends abstract_service_1.default {
                     email,
                     otp,
                 });
-                lib_1.default.customSendMail(email, 'One Time Password (Otp)', 'this is otp', otp);
+                // Lib.customSendMail(email, 'One Time Password (Otp)', 'this is otp', otp);
                 if (res.length) {
                     return {
                         success: true,

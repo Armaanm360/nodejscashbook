@@ -1,9 +1,10 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import RootRouter from './router';
-import cors from 'cors'
+import cors from 'cors';
+import CustomError from '../utils/lib/customEror';
+import ErrorHandler from '../common/middlewares/errorHandler/errorHandler';
 
 class App {
-
   public app: Application;
   private port: number;
   // private origin: string[] = origin
@@ -13,10 +14,9 @@ class App {
     this.port = port;
     this.initMiddlewares();
     this.initRouters();
-    //rest
-
+    this.notFoundRouter();
+    this.errorHandle();
   }
-
 
   // init middlewares
   private initMiddlewares() {
@@ -25,7 +25,6 @@ class App {
     // this.app.use(morgan('dev'));
     this.app.use(cors({ origin: ['localhost:3000'], credentials: true }));
   }
-
 
   //start server
 
@@ -44,7 +43,17 @@ class App {
     this.app.use('/api/v1', new RootRouter().v1Router);
   }
 
+  // not found router
+  private notFoundRouter() {
+    this.app.use('*', (_req: Request, _res: Response, next: NextFunction) => {
+      next(new CustomError('Cannot found the route', 404, 'Invalid route'));
+    });
+  }
 
+  // error handler
+  private errorHandle() {
+    this.app.use(new ErrorHandler().handleErrors);
+  }
 }
 
 export default App;

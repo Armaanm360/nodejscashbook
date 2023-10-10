@@ -13,6 +13,7 @@ interface ENV {
   DB_HOST: string | undefined;
   EMAIL_SEND_EMAIL_ID: string | undefined;
   EMAIL_SEND_PASSWORD: string | undefined;
+  JWT_SECRET: string | undefined;
 }
 
 // Config types
@@ -25,6 +26,7 @@ interface Config {
   DB_HOST: string;
   EMAIL_SEND_EMAIL_ID: string;
   EMAIL_SEND_PASSWORD: string;
+  JWT_SECRET: string;
 }
 
 // Loading process.env as  ENV interface
@@ -38,6 +40,7 @@ const getConfig = (): ENV => {
     DB_PORT: process.env.DB_PORT,
     EMAIL_SEND_EMAIL_ID: process.env.EMAIL_SEND_EMAIL_ID,
     EMAIL_SEND_PASSWORD: process.env.EMAIL_SEND_PASSWORD,
+    JWT_SECRET: process.env.JWT_SECRET,
   };
 };
 

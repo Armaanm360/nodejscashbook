@@ -12,12 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const constants_1 = require("../miscellaneous/constants");
-const config_1 = __importDefault(require("../../config/config"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const nodemailer_1 = __importDefault(require("nodemailer"));
-const sendMyEmailOtp_1 = require("./../../templates/sendMyEmailOtp");
 class Lib {
     // make hashed password
     static hashPass(password) {
@@ -59,66 +55,69 @@ class Lib {
         return otp;
     }
     // generate random Number and alphabet
-    static otpGenNumberAndAlphabet(length) {
-        let otp = '';
-        for (let i = 0; i < length; i++) {
-            const randomNumber = Math.floor(Math.random() * constants_1.allStrings.length);
-            otp += constants_1.allStrings[randomNumber];
-        }
-        return otp;
-    }
+    // public static otpGenNumberAndAlphabet(length: number) {
+    //   let otp = '';
+    //   for (let i = 0; i < length; i++) {
+    //     const randomNumber = Math.floor(Math.random() * allStrings.length);
+    //     otp += allStrings[randomNumber];
+    //   }
+    //   return otp;
+    // }
     // send email by nodemailer
-    static sendEmail(email, emailSub, emailBody) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const transporter = nodemailer_1.default;
-                nodemailer_1.default.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config_1.default.EMAIL_SEND_EMAIL_ID,
-                        pass: config_1.default.EMAIL_SEND_PASSWORD,
-                    },
-                });
-                const info = yield transporter.sendMail({
-                    from: config_1.default.EMAIL_SEND_EMAIL_ID,
-                    to: email,
-                    subject: emailSub,
-                    html: emailBody,
-                });
-                console.log('Message send: %s', info);
-                return true;
-            }
-            catch (err) {
-                console.log({ err });
-                return false;
-            }
-        });
-    }
-    static customSendMail(email, subject, body, otp) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const transporter = nodemailer_1.default.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config_1.default.EMAIL_SEND_EMAIL_ID,
-                        pass: config_1.default.EMAIL_SEND_PASSWORD,
-                    },
-                });
-                const info = yield transporter.sendMail({
-                    from: config_1.default.EMAIL_SEND_EMAIL_ID,
-                    to: email,
-                    subject: subject,
-                    html: (0, sendMyEmailOtp_1.sendMyEmailOtp)(otp),
-                });
-                console.log('message sent to' + '-' + info.to);
-                return true;
-            }
-            catch (err) {
-                console.log({ err });
-                return false;
-            }
-        });
-    }
+    // public static async sendEmail(
+    //   email: string,
+    //   emailSub: string,
+    //   emailBody: string
+    // ) {
+    //   try {
+    //     const transporter = nodemailer;
+    //     nodemailer.createTransport({
+    //       service: 'gmail',
+    //       auth: {
+    //         user: config.EMAIL_SEND_EMAIL_ID,
+    //         pass: config.EMAIL_SEND_PASSWORD,
+    //       },
+    //     });
+    //     const info = await transporter.sendMail({
+    //       from: config.EMAIL_SEND_EMAIL_ID,
+    //       to: email,
+    //       subject: emailSub,
+    //       html: emailBody,
+    //     });
+    //     console.log('Message send: %s', info);
+    //     return true;
+    //   } catch (err: any) {
+    //     console.log({ err });
+    //     return false;
+    //   }
+    // }
+    // public static async customSendMail(
+    //   email: string,
+    //   subject: string,
+    //   body: string,
+    //   otp: string
+    // ) {
+    //   try {
+    //     const transporter = nodemailer.createTransport({
+    //       service: 'gmail',
+    //       auth: {
+    //         user: config.EMAIL_SEND_EMAIL_ID,
+    //         pass: config.EMAIL_SEND_PASSWORD,
+    //       },
+    //     });
+    //     const info = await transporter.sendMail({
+    //       from: config.EMAIL_SEND_EMAIL_ID,
+    //       to: email,
+    //       subject: subject,
+    //       html: sendMyEmailOtp(otp),
+    //     });
+    //     console.log('message sent to' + '-' + info.to);
+    //     return true;
+    //   } catch (err: any) {
+    //     console.log({ err });
+    //     return false;
+    //   }
+    // }
     static getAnyMonthFirstDate(month) {
         function monthsGetDays(month) {
             switch (month) {

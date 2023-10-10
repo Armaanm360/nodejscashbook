@@ -21,7 +21,6 @@ class Wrapper {
         await cb(req, res, next);
       } catch (err: any) {
         console.log({ err });
-
         next(new CustomError(err.message, err.status, err.type));
       }
     };

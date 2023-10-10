@@ -1,7 +1,10 @@
 import AbstractService from '../../abstract/abstract.service';
+import CommonService from '../../common/commonService/common.service';
+import Lib from '../../utils/lib/lib';
 import { CreatingUser } from '../utils/user.types';
 
 class CreateUserService extends AbstractService {
+  private commonService = new CommonService();
   constructor() {
     super();
   }
@@ -11,25 +14,42 @@ class CreateUserService extends AbstractService {
     username,
     password,
   }: CreatingUser) {
-    const res = await this.db('users').insert({
-      name,
-      email,
-      username,
-      password,
+    const hashPas = await Lib.hashPass(password);
+    // console.log(password);
+    const dbtab = 'users';
+    const checkforeamil = await this.commonService.checkUserByUniqueKey({
+      table: dbtab,
+      field: 'email',
+      value: email,
     });
 
-    if (res.length) {
-      return {
-        success: true,
-        code: 201,
-        message: 'User added successfully',
-        data: { name, email, username, password },
-      };
+    if (!checkforeamil) {
+      const res = await this.db('users').insert({
+        name,
+        email,
+        username,
+        password: hashPas,
+      });
+
+      if (res.length) {
+        return {
+          success: true,
+          code: 201,
+          message: 'User added successfully',
+          data: { name, email, username, password: hashPas },
+        };
+      } else {
+        return {
+          success: false,
+          code: 401,
+          message: 'data not found',
+        };
+      }
     } else {
       return {
-        success: false,
+        success: true,
         code: 401,
-        message: 'data not found',
+        message: 'Email Already Exsists',
       };
     }
   }

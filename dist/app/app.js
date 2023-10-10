@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router_1 = __importDefault(require("./router"));
 const cors_1 = __importDefault(require("cors"));
+const customEror_1 = __importDefault(require("../utils/lib/customEror"));
+const errorHandler_1 = __importDefault(require("../common/middlewares/errorHandler/errorHandler"));
 class App {
     // private origin: string[] = origin
     constructor(port) {
@@ -13,7 +15,8 @@ class App {
         this.port = port;
         this.initMiddlewares();
         this.initRouters();
-        //rest
+        this.notFoundRouter();
+        this.errorHandle();
     }
     // init middlewares
     initMiddlewares() {
@@ -34,6 +37,16 @@ class App {
             res.send(`ক্যাশবুক সার্ভার চলতেসে`);
         });
         this.app.use('/api/v1', new router_1.default().v1Router);
+    }
+    // not found router
+    notFoundRouter() {
+        this.app.use('*', (_req, _res, next) => {
+            next(new customEror_1.default('Cannot found the route', 404, 'Invalid route'));
+        });
+    }
+    // error handler
+    errorHandle() {
+        this.app.use(new errorHandler_1.default().handleErrors);
     }
 }
 exports.default = App;

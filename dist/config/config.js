@@ -40,6 +40,7 @@ const getConfig = () => {
         DB_PORT: process.env.DB_PORT,
         EMAIL_SEND_EMAIL_ID: process.env.EMAIL_SEND_EMAIL_ID,
         EMAIL_SEND_PASSWORD: process.env.EMAIL_SEND_PASSWORD,
+        JWT_SECRET: process.env.JWT_SECRET,
     };
 };
 const getSanitzedConfig = (config) => {
