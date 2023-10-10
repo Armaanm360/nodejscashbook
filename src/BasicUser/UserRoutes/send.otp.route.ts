@@ -26,6 +26,8 @@ class SendOtp extends AbstractRouter {
     // this.router
     //   .route('/check-password')
     //   .post(this.otpController.changePasswordInsideCheck);
+
+    // ok;
   }
 }
 
